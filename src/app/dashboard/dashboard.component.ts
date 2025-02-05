@@ -2,6 +2,9 @@ import { Component, inject } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
 import { Observable } from 'rxjs';
 import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
 
@@ -9,14 +12,17 @@ import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-cu
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatDialogModule, // Hier MatDialogModule importieren
+    MatButtonModule, // Buttons für Navigation & Aktionen
+    MatDialogModule, // Dialog für Kunden hinzufügen
+    MatSidenavModule, // Sidebar für Navigation
+    MatCardModule, // Material Cards für die Kennzahlen
+    MatListModule, // Falls du eine Patientenliste einbauen willst
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
-  private firestore: Firestore = inject(Firestore); // Firestore korrekt injizieren
+  private firestore: Firestore = inject(Firestore);
   insuredPeople$: Observable<any[]>;
 
   constructor(private dialog: MatDialog) {
@@ -26,7 +32,7 @@ export class DashboardComponent {
 
   openAddCustomerDialog() {
     this.dialog.open(DialogAddCustomerComponent, {
-      width: '400px' // Optional: Breite des Dialogs anpassen
+      width: '400px'
     });
   }
 }

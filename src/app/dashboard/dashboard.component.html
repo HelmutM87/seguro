@@ -1,24 +1,33 @@
-<div class="dashboard">
-    <h1>Versicherungsverwaltung</h1>
-    
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <h2>Versicherte</h2>
-        <p>Anzahl: 0</p>
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav mode="side" opened class="sidenav">
+      <h3>Menü</h3>
+      <button mat-button (click)="openAddCustomerDialog()">➕ Neuen Kunden</button>
+      <button mat-button routerLink="/patients">🩺 Patientendatenbank</button>
+      <button mat-button routerLink="/settings">⚙️ Einstellungen</button>
+    </mat-sidenav>
+
+    <!-- Hauptinhalt -->
+    <mat-sidenav-content class="main-content">
+      <h1>Versicherungsverwaltung</h1>
+
+      <div class="dashboard-grid">
+        <mat-card class="dashboard-card">
+          <mat-card-title>Versicherte</mat-card-title>
+          <mat-card-content>Anzahl: 0</mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card">
+          <mat-card-title>Monatliche Einnahmen</mat-card-title>
+          <mat-card-content>0 Peso</mat-card-content>
+        </mat-card>
+
+        <mat-card class="dashboard-card">
+          <mat-card-title>Bezahlte Rechnungen</mat-card-title>
+          <mat-card-content>0 Peso</mat-card-content>
+        </mat-card>
       </div>
-  
-      <div class="dashboard-card">
-        <h2>Monatliche Einnahmen</h2>
-        <p>0 Peso</p>
-      </div>
-  
-      <div class="dashboard-card">
-        <h2>Bezahlte Rechnungen</h2>
-        <p>0 Peso</p>
-      </div>
-    </div>
-  </div>
-  <button mat-raised-button color="primary" (click)="openAddCustomerDialog()">
-    Neuen Kunden hinzufügen
-  </button>
-  
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

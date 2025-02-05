@@ -1,18 +1,47 @@
-.dashboard {
-    padding: 20px;
-  }
-  
-  .dashboard-grid {
-    display: flex;
-    gap: 20px;
-  }
-  
-  .dashboard-card {
-    background: #f4f4f4;
-    padding: 20px;
-    border-radius: 8px;
-    width: 250px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidenav-container {
+  width: 100%;
+  height: 100%;
+}
+
+.sidenav {
+  width: 250px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-right: 1px solid #ddd;
+}
+
+.sidenav h3 {
+  margin-bottom: 20px;
+}
+
+.sidenav button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-card {
+  padding: 20px;
+  text-align: center;
+}
