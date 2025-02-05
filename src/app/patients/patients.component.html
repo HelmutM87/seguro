@@ -1,1 +1,29 @@
-<p>patients works!</p>
+<div class="patients-container">
+    <h2 class="title">Versicherte Patienten</h2>
+  
+    <mat-list *ngIf="(patients$ | async) as patients; else noPatients">
+      <mat-list-item *ngFor="let patient of patients">
+        <mat-card class="patient-card">
+          <mat-card-content>
+            <div class="patient-info">
+              <div class="name">
+                <strong>{{ patient['lastName'] }}, {{ patient['firstName'] }}</strong>
+              </div>
+              <div class="details">
+                <span>🆔 ID: {{ patient['idNumber'] }}</span>
+                <span>🎂 Geboren: {{ patient['birthDate'] | date:'dd.MM.yyyy' }}</span>
+                <span>📅 Versichert seit: {{ patient['insuredSince'] | date:'dd.MM.yyyy' }}</span>
+                <span>💰 Zahlungsart: {{ patient['paymentMethod'] }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+  
+    <ng-template #noPatients>
+      <p class="no-data">Es sind noch keine Versicherten registriert.</p>
+    </ng-template>
+  </div>
+  
