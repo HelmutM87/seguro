@@ -4,9 +4,9 @@
   <div *ngIf="(patients$ | async) as patients; else noPatients">
     <table mat-table [dataSource]="patients" class="mat-elevation-z8">
 
-      <ng-container matColumnDef="idNumber">
+      <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef="let element"> ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
       </ng-container>
 
       <ng-container matColumnDef="lastName">
@@ -21,19 +21,12 @@
 
       <ng-container matColumnDef="birthDate">
         <th mat-header-cell *matHeaderCellDef="let element"> Geboren </th>
-        <td mat-cell *matCellDef="let element"> {{element.birthDate | date:'dd.MM.yyyy'}} </td>
-      </ng-container>
+        <td mat-cell *matCellDef="let element"> {{element.birthDate}} </td>  </ng-container>
 
-      <ng-container matColumnDef="insuredSince">
-        <th mat-header-cell *matHeaderCellDef="let element"> Versichert seit </th>
-        <td mat-cell *matCellDef="let element"> {{element.insuredSince | date:'dd.MM.yyyy'}} </td>
+      <ng-container matColumnDef="city">
+        <th mat-header-cell *matHeaderCellDef="let element"> Wohnort </th>
+        <td mat-cell *matCellDef="let element"> {{element.city}} </td>
       </ng-container>
-
-      <ng-container matColumnDef="paymentMethod">
-        <th mat-header-cell *matHeaderCellDef="let element"> Zahlungsart </th>
-        <td mat-cell *matCellDef="let element"> {{element.paymentMethod}} </td>
-      </ng-container>
-
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

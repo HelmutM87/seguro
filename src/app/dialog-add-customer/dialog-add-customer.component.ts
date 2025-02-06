@@ -6,14 +6,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { v4 as uuidv4 } from 'uuid';
 import { MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Platform } from '@angular/cdk/platform';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import * as moment from 'moment'; // Korrekter Import
+// Korrekter Import:
+import moment from 'moment'; // Default Import
+
 
 const MY_DATE_FORMATS = {
   parse: {
@@ -72,13 +73,21 @@ export class DialogAddCustomerComponent {
       const db = getFirestore();
       const customersCollection = collection(db, 'customers');
 
+      const formData = this.customerForm.value;
+
       const customerData = {
-        ...this.customerForm.value,
-        insuredNumber: uuidv4()
+        ...formData,
+        birthDate: formData.birthDate ? moment(formData.birthDate).toDate() : null, // Kein Problem mehr
+        insuredSince: formData.insuredSince ? moment(formData.insuredSince).toDate() : null, // Kein Problem mehr
       };
 
-      await addDoc(customersCollection, customerData);
-      this.dialogRef.close(customerData);
+      try {
+        const docRef = await addDoc(customersCollection, customerData);
+        const addedCustomerData = { ...customerData, id: docRef.id };
+        this.dialogRef.close(addedCustomerData);
+      } catch (error) {
+        console.error('Fehler beim Hinzufügen des Kunden:', error);
+      }
     }
   }
 
