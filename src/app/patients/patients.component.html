@@ -1,29 +1,46 @@
 <div class="patients-container">
-    <h2 class="title">Versicherte Patienten</h2>
-  
-    <mat-list *ngIf="(patients$ | async) as patients; else noPatients">
-      <mat-list-item *ngFor="let patient of patients">
-        <mat-card class="patient-card">
-          <mat-card-content>
-            <div class="patient-info">
-              <div class="name">
-                <strong>{{ patient['lastName'] }}, {{ patient['firstName'] }}</strong>
-              </div>
-              <div class="details">
-                <span>🆔 ID: {{ patient['idNumber'] }}</span>
-                <span>🎂 Geboren: {{ patient['birthDate'] | date:'dd.MM.yyyy' }}</span>
-                <span>📅 Versichert seit: {{ patient['insuredSince'] | date:'dd.MM.yyyy' }}</span>
-                <span>💰 Zahlungsart: {{ patient['paymentMethod'] }}</span>
-              </div>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        <mat-divider></mat-divider>
-      </mat-list-item>
-    </mat-list>
-  
-    <ng-template #noPatients>
-      <p class="no-data">Es sind noch keine Versicherten registriert.</p>
-    </ng-template>
+  <h2 class="title">Versicherte Patienten</h2>
+
+  <div *ngIf="(patients$ | async) as patients; else noPatients">
+    <table mat-table [dataSource]="patients" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="idNumber">
+        <th mat-header-cell *matHeaderCellDef="let element"> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.idNumber}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastName">
+        <th mat-header-cell *matHeaderCellDef="let element"> Nachname </th>
+        <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="firstName">
+        <th mat-header-cell *matHeaderCellDef="let element"> Vorname </th>
+        <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="birthDate">
+        <th mat-header-cell *matHeaderCellDef="let element"> Geboren </th>
+        <td mat-cell *matCellDef="let element"> {{element.birthDate | date:'dd.MM.yyyy'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="insuredSince">
+        <th mat-header-cell *matHeaderCellDef="let element"> Versichert seit </th>
+        <td mat-cell *matCellDef="let element"> {{element.insuredSince | date:'dd.MM.yyyy'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentMethod">
+        <th mat-header-cell *matHeaderCellDef="let element"> Zahlungsart </th>
+        <td mat-cell *matCellDef="let element"> {{element.paymentMethod}} </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
   </div>
-  
+
+  <ng-template #noPatients>
+    <p class="no-data">Es sind noch keine Versicherten registriert.</p>
+  </ng-template>
+</div>
