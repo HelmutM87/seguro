@@ -2,10 +2,11 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component'; // Import your DashboardComponent
 import { PatientsComponent } from './patients/patients.component'; // Import your PatientsComponent
+import { SettingsComponent } from './settings/settings.component'; // Import your SettingsComponent
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // Redirect empty path to dashboard
-  { path: 'dashboard', component: DashboardComponent }, // Route for the dashboard
-  { path: 'patients', component: PatientsComponent }, // Route for the patients component
-  // Add other routes as needed
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'patients', component: PatientsComponent },
+  { path: 'settings', component: SettingsComponent }, // Stelle sicher, dass diese Route existiert
 ];

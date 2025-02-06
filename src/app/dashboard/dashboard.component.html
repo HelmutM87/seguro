@@ -2,30 +2,70 @@
   <!-- Sidebar -->
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav mode="side" opened class="sidenav">
-      <h3>Menü</h3>
-      <button mat-button (click)="openAddCustomerDialog()">➕ Neuen Kunden</button>
-      <button mat-button routerLink="/patients">🩺 Patientendatenbank</button>
-      <button mat-button routerLink="/settings">⚙️ Einstellungen</button>
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <h3>Menü</h3>
+      </div>
+
+      <!-- Navigation -->
+      <mat-nav-list>
+        <!-- Patientendatenbank -->
+        <a mat-list-item routerLink="/patients" routerLinkActive="active">
+          <mat-icon>people</mat-icon>
+          <span class="nav-label">Patientendatenbank</span>
+        </a>
+
+        <!-- Neuer Kunde hinzufügen -->
+        <a mat-list-item (click)="openAddCustomerDialog()">
+          <mat-icon>person_add</mat-icon>
+          <span class="nav-label">Neuer Kunde</span>
+        </a>
+
+        <!-- Einstellungen -->
+        <a mat-list-item routerLink="/settings" routerLinkActive="active">
+          <mat-icon>settings</mat-icon>
+          <span class="nav-label">Einstellungen</span>
+        </a>
+      </mat-nav-list>
     </mat-sidenav>
 
     <!-- Hauptinhalt -->
     <mat-sidenav-content class="main-content">
-      <h1>Versicherungsverwaltung</h1>
+      <!-- Header -->
+      <div class="main-header">
+        <h1>Versicherungsverwaltung</h1>
+      </div>
 
+      <!-- Dashboard-Karten -->
       <div class="dashboard-grid">
+        <!-- Versicherte -->
         <mat-card class="dashboard-card">
-          <mat-card-title>Versicherte</mat-card-title>
-          <mat-card-content>Anzahl: 0</mat-card-content>
+          <mat-card-header>
+            <mat-card-title>Versicherte</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="card-value">0</p>
+          </mat-card-content>
         </mat-card>
 
+        <!-- Monatliche Einnahmen -->
         <mat-card class="dashboard-card">
-          <mat-card-title>Monatliche Einnahmen</mat-card-title>
-          <mat-card-content>0 Peso</mat-card-content>
+          <mat-card-header>
+            <mat-card-title>Monatliche Einnahmen</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="card-value">0 Peso</p>
+          </mat-card-content>
         </mat-card>
 
+        <!-- Bezahlte Rechnungen -->
         <mat-card class="dashboard-card">
-          <mat-card-title>Bezahlte Rechnungen</mat-card-title>
-          <mat-card-content>0 Peso</mat-card-content>
+          <mat-card-header>
+            <mat-card-title>Bezahlte Rechnungen</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="card-value">0 Peso</p>
+          </mat-card-content>
         </mat-card>
       </div>
     </mat-sidenav-content>
