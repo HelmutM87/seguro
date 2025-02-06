@@ -1,0 +1,17 @@
+/* dialog-add-customer.component.css */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive Grid */
+    grid-gap: 16px; /* Abstand zwischen den Feldern */
+  }
+  
+  /* Optional: Styling für die Dialog-Buttons */
+  .mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end; /* Buttons rechts ausrichten */
+    margin-top: 16px;
+  }
+  
+  .mat-form-field {
+    width: 100%; /* Formfelder nehmen die volle Breite ein */
+  }

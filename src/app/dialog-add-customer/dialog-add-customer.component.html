@@ -1,44 +1,59 @@
-<form [formGroup]="customerForm" (ngSubmit)="saveCustomer()">
-    <h2>Neuen Kunden anlegen</h2>
-    
-    <mat-form-field appearance="outline">
-      <mat-label>ID Nummer</mat-label>
-      <input matInput formControlName="idNumber" required>
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Vorname</mat-label>
-      <input matInput formControlName="firstName" required>
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Nachname</mat-label>
-      <input matInput formControlName="lastName" required>
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Geburtsdatum</mat-label>
-      <input matInput type="date" formControlName="birthDate" required>
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Versichert seit</mat-label>
-      <input matInput type="date" formControlName="insuredSince" required>
-    </mat-form-field>
-  
-    <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Zahlungsart</mat-label>
-      <mat-select formControlName="paymentMethod" required>
-        <mat-option value="Konto">Konto</mat-option>
-        <mat-option value="Bar">Bar</mat-option>
-      </mat-select>
-    </mat-form-field>
-  
-    <div class="dialog-actions">
-      <button mat-button type="button" (click)="closeDialog()">Abbrechen</button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="customerForm.invalid">Speichern</button>
+<h2 mat-dialog-title>Versicherten hinzufügen</h2>
+<mat-dialog-content>
+  <form [formGroup]="customerForm">
+    <div class="form-grid">  <mat-form-field appearance="outline">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="lastName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Geburtsdatum</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="birthDate" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Wohnort</mat-label>
+        <input matInput formControlName="city" required>  </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Dokumentennummer (Carnet)</mat-label>
+        <input matInput formControlName="documentNumber" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Telefonnummer</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Versichert seit</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="insuredSince" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Zahlungsart</mat-label>
+        <mat-select formControlName="paymentMethod" required>
+          <mat-option value="Bar">Bar</mat-option>
+          <mat-option value="Überweisung">Überweisung</mat-option>
+          <mat-option value="QR-Code">QR-Code</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox>
     </div>
   </form>
-  
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="closeDialog()">Abbrechen</button>
+  <button mat-flat-button color="primary" type="submit" [disabled]="customerForm.invalid" (click)="saveCustomer()">Speichern</button>
+</mat-dialog-actions>
