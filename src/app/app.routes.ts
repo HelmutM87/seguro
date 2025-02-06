@@ -1,12 +1,13 @@
-// routes.ts
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component'; // Import your DashboardComponent
-import { PatientsComponent } from './patients/patients.component'; // Import your PatientsComponent
-import { SettingsComponent } from './settings/settings.component'; // Import your SettingsComponent
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { PatientsComponent } from './patients/patients.component';
+import { SettingsComponent } from './settings/settings.component';
+import { PatientDetailsComponent } from './patient-details/patient-details.component'; // Import der Detailansicht-Komponente
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'patients', component: PatientsComponent },
-  { path: 'settings', component: SettingsComponent }, // Stelle sicher, dass diese Route existiert
+  { path: 'patients/:id', component: PatientDetailsComponent }, // Neue Route für die Detailansicht mit ID-Parameter
+  { path: 'settings', component: SettingsComponent },
 ];
