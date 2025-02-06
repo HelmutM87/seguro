@@ -2,25 +2,27 @@
 .patients-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Zentriert die Tabelle horizontal */
+  align-items: center;
   padding: 20px;
 }
 
-.title {
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 900px;
   margin-bottom: 20px;
-  text-align: center; /* Zentriert den Titel */
+}
+
+.search-field {
+  width: 300px;
 }
 
 table {
-  width: 100%; /* Tabelle über die volle Breite des Containers */
-  max-width: 900px; /* Maximale Breite der Tabelle */
+  width: 100%;
+  max-width: 900px;
   margin-bottom: 20px;
-}
-
-.mat-elevation-z8 { /* Optional: Fügt einen Schatten unter der Tabelle hinzu */
-  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .no-data {
@@ -28,6 +30,23 @@ table {
   font-style: italic;
   color: #777;
 }
+
+.mat-elevation-z8 { /* Optional: Fügt einen Schatten unter der Tabelle hinzu */
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+.title {
+  margin-bottom: 20px;
+  text-align: center; /* Zentriert den Titel */
+}
+
+
+
+.search-box {
+  width: 250px;
+}
+
 
 /* Optional: Styling für die Tabellenüberschriften */
 th.mat-header-cell {
