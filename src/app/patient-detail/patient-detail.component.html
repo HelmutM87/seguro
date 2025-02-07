@@ -1,0 +1,22 @@
+<div class="detail-container" *ngIf="!loading; else loadingTemplate">
+    <mat-card>
+      <mat-card-title>{{ patient.firstName }} {{ patient.lastName }}</mat-card-title>
+      <mat-card-content>
+        <p><strong>Geburtsdatum:</strong> {{ patient.birthDate | date:'dd.MM.yyyy' }}</p>
+        <p><strong>Wohnort:</strong> {{ patient.city }}</p>
+        <p><strong>Dokumentnummer:</strong> {{ patient.documentNumber }}</p>
+        <p><strong>Telefon:</strong> {{ patient.phoneNumber }}</p>
+        <p><strong>Versichert seit:</strong> {{ patient.insuredSince | date:'dd.MM.yyyy' }}</p>
+        <p><strong>Zahlungsmethode:</strong> {{ patient.paymentMethod }}</p>
+        <p><strong>Versicherungsstatus:</strong> {{ patient.insuranceStatus ? 'Aktiv' : 'Inaktiv' }}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" routerLink="/patients">Zurück</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <ng-template #loadingTemplate>
+    <p>Lade Patientendaten...</p>
+  </ng-template>
+  
