@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -10,7 +10,12 @@ import { Timestamp } from '@angular/fire/firestore';
 @Component({
   selector: 'app-patient-detail',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule],
+  imports: [
+    CommonModule, 
+    MatCardModule,
+    MatButtonModule,
+    RouterModule
+  ],
   templateUrl: './patient-detail.component.html',
   styleUrls: ['./patient-detail.component.scss'],
 })
