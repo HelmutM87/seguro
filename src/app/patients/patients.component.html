@@ -1,12 +1,19 @@
 <div class="patients-container">
   <div class="header">
     <h2 class="title">Versicherte Patienten</h2>
-    
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Suche</mat-label>
-      <input matInput [(ngModel)]="searchQuery" (input)="filterPatients()" placeholder="Name oder Wohnort eingeben">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Suche</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (input)="filterPatients()" placeholder="Name oder Wohnort eingeben">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Button zum Hinzufügen eines neuen Patienten -->
+      <button mat-icon-button (click)="openDialog()">
+        <mat-icon>person_add</mat-icon>
+      </button>
+    </div>
   </div>
 
   <div *ngIf="filteredPatients.length > 0; else noPatients">

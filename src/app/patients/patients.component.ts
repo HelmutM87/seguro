@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Patient {
   id: string;
@@ -24,7 +25,6 @@ interface Patient {
   selector: 'app-patients',
   standalone: true,
   imports: [
-    DialogAddCustomerComponent,
     CommonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -37,9 +37,11 @@ interface Patient {
 })
 export class PatientsComponent {
   private firestore: Firestore = inject(Firestore);
+  private router: Router = inject(Router);
+
   patients$: Observable<Patient[]>;
   displayedColumns: string[] = ['id', 'lastName', 'firstName', 'birthDate', 'city'];
-  
+
   searchQuery: string = '';
   allPatients: Patient[] = [];
   filteredPatients: Patient[] = [];
@@ -58,7 +60,7 @@ export class PatientsComponent {
 
     this.patients$.subscribe(data => {
       this.allPatients = data;
-      this.filteredPatients = [...this.allPatients]; 
+      this.filteredPatients = [...this.allPatients];
     });
   }
 
@@ -71,7 +73,9 @@ export class PatientsComponent {
     );
   }
 
-
+  viewPatientDetails(patientId: string) {
+    this.router.navigate(['/patients', patientId]);
+  }
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogAddCustomerComponent);

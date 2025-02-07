@@ -15,8 +15,24 @@
   margin-bottom: 20px;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Abstand zwischen Suchfeld und Button */
+}
+
 .search-field {
   width: 300px;
+}
+
+.add-button {
+  height: 80px;
+  padding: 0 15px;
+  font-size: 14px;
+
+  > :hover {
+    cursor: pointer;
+  }
 }
 
 table {
@@ -31,40 +47,49 @@ table {
   color: #777;
 }
 
-.mat-elevation-z8 { /* Optional: Fügt einen Schatten unter der Tabelle hinzu */
+.mat-elevation-z8 {
   box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
               0px 8px 10px 1px rgba(0, 0, 0, 0.14),
               0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
+
 .title {
   margin-bottom: 20px;
-  text-align: center; /* Zentriert den Titel */
+  text-align: center;
 }
 
-
-
-.search-box {
-  width: 250px;
-}
-
-
-/* Optional: Styling für die Tabellenüberschriften */
 th.mat-header-cell {
   font-weight: bold;
   padding: 10px;
-  text-align: left; /* Ausrichtung des Textes in den Überschriften */
+  text-align: left;
 }
 
-/* Optional: Styling für die Tabellenzellen */
 td.mat-cell {
   padding: 10px;
-  border-bottom: 1px solid #ddd; /* Trennlinien zwischen den Zeilen */
+  border-bottom: 1px solid #ddd;
 }
 
-/* Responsive Design (Optional): Anpassung der Tabelle für kleinere Bildschirme */
+/* Responsive Design */
 @media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-container {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .search-field {
+    width: 100%;
+    max-width: 300px;
+  }
+
   table {
     display: block;
-    overflow-x: auto; /* Horizontale Scrollbar bei Bedarf */
+    overflow-x: auto;
   }
 }
