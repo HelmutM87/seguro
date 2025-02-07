@@ -6,6 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import moment from 'moment';
 import { Timestamp } from '@angular/fire/firestore';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogEditPatientComponent } from '../dialog-edit-patient/dialog-edit-patient.component';
 
 @Component({
   selector: 'app-patient-detail',
@@ -14,7 +16,8 @@ import { Timestamp } from '@angular/fire/firestore';
     CommonModule, 
     MatCardModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    MatDialogModule
   ],
   templateUrl: './patient-detail.component.html',
   styleUrls: ['./patient-detail.component.scss'],
@@ -22,7 +25,9 @@ import { Timestamp } from '@angular/fire/firestore';
 export class PatientDetailComponent {
   private route = inject(ActivatedRoute);
   private firestore = inject(Firestore);
-  
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
+
   patient: any = null;
   loading = true;
 
@@ -55,6 +60,21 @@ export class PatientDetailComponent {
       console.error('Patient nicht gefunden');
     }
     this.loading = false;
+  }
+
+  openEditDialog() {
+    const dialogRef = this.dialog.open(DialogEditPatientComponent, {
+      width: '400px',
+      data: this.patient
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'deleted') {
+        this.router.navigate(['/patients']); // Falls gelöscht, zur Patientenliste navigieren
+      } else if (result) {
+        this.loadPatientData(); // Falls gespeichert, Daten neu laden
+      }
+    });
   }
 
   private convertTimestamp(timestamp: any): string {

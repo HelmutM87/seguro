@@ -1,0 +1,56 @@
+<h2>Patient bearbeiten</h2>
+<form [formGroup]="form">
+  <mat-form-field>
+    <mat-label>Vorname</mat-label>
+    <input matInput formControlName="firstName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nachname</mat-label>
+    <input matInput formControlName="lastName">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Geburtsdatum</mat-label>
+    <input matInput type="date" formControlName="birthDate">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Wohnort</mat-label>
+    <input matInput formControlName="city">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Dokumentnummer</mat-label>
+    <input matInput formControlName="documentNumber">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Telefon</mat-label>
+    <input matInput formControlName="phoneNumber">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Versichert seit</mat-label>
+    <input matInput type="date" formControlName="insuredSince">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Zahlungsmethode</mat-label>
+    <input matInput formControlName="paymentMethod">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Versicherungsstatus</mat-label>
+    <mat-select formControlName="insuranceStatus">
+      <mat-option [value]="true">Aktiv</mat-option>
+      <mat-option [value]="false">Inaktiv</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <button mat-button (click)="close()">Abbrechen</button>
+    <button mat-button color="primary" (click)="saveChanges()">Speichern</button>
+    <button mat-button color="warn" (click)="deletePatient()">Löschen</button>
+  </div>
+</form>
