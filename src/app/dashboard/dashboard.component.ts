@@ -7,9 +7,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { Observable } from 'rxjs';
 import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { map } from 'rxjs/operators'; // Import for map operator
+import { map } from 'rxjs/operators';
+import { AsyncPipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,23 +22,21 @@ import { map } from 'rxjs/operators'; // Import for map operator
     MatSidenavModule,
     MatCardModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    CommonModule,
+    AsyncPipe
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
   private firestore: Firestore = inject(Firestore);
-  insuredPeople$: Observable<any[]>;
-  insuredPeopleCount: number = 0; // Add a variable to store the count
+  insuredPeopleCount$: Observable<number>;  // Typ auf number ändern
 
   constructor(private dialog: MatDialog) {
-    const insuredCollection = collection(this.firestore, 'insuredPeople');
-    this.insuredPeople$ = collectionData(insuredCollection).pipe(
-      map(insuredPeople => {
-        this.insuredPeopleCount = insuredPeople.length; // Update the count
-        return insuredPeople; // Return the original array
-      })
+    const customersCollection = collection(this.firestore, 'customers');
+    this.insuredPeopleCount$ = collectionData(customersCollection).pipe(
+      map(insuredPeople => insuredPeople.length) // Anzahl der Einträge in der Collection berechnen
     );
   }
 

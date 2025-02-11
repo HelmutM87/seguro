@@ -26,18 +26,20 @@
       </div>
 
       <div class="dashboard-grid">
-        <mat-card class="dashboard-card">
+
+        <mat-card class="dashboard-card" routerLink="/patients" routerLinkActive="active">
+          
           <mat-card-header>
             <mat-card-title>Versicherte</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <p class="card-value">{{ insuredPeopleCount }}</p>
+            <p class="card-value">{{ insuredPeopleCount$ | async }}</p>
           </mat-card-content>
         </mat-card>
 
         <mat-card class="dashboard-card">
           <mat-card-header>
-            <mat-card-title>Monatliche Einnahmen</mat-card-title>
+            <mat-card-title> Einnahmen</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <p class="card-value">0 Peso</p>
@@ -46,7 +48,7 @@
 
         <mat-card class="dashboard-card">
           <mat-card-header>
-            <mat-card-title>Bezahlte Rechnungen</mat-card-title>
+            <mat-card-title>Ausgaben</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <p class="card-value">0 Peso</p>

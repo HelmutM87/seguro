@@ -50,13 +50,27 @@ export class PatientsComponent {
   constructor(public dialog: MatDialog) {
     const patientsCollection = collection(this.firestore, 'customers');
     this.patients$ = collectionData(patientsCollection, { idField: 'id' }).pipe(
-      map(patients => patients.map((patient): Patient => ({
-        id: patient.id,
-        lastName: patient['lastName'],
-        firstName: patient['firstName'],
-        birthDate: this.convertTimestamp(patient['birthDate']),
-        city: patient['city']
-      })))
+      map(patients => 
+        patients
+          .map((patient): Patient => ({
+            id: patient.id,
+            lastName: patient['lastName'],
+            firstName: patient['firstName'],
+            birthDate: this.convertTimestamp(patient['birthDate']),
+            city: patient['city']
+          }))
+          .sort((a, b) => {
+            // Sortiere zuerst nach Nachnamen
+            if (a.lastName.toLowerCase() < b.lastName.toLowerCase()) return -1;
+            if (a.lastName.toLowerCase() > b.lastName.toLowerCase()) return 1;
+
+            // Wenn die Nachnamen gleich sind, sortiere nach Vornamen
+            if (a.firstName.toLowerCase() < b.firstName.toLowerCase()) return -1;
+            if (a.firstName.toLowerCase() > b.firstName.toLowerCase()) return 1;
+
+            return 0; // Falls alles gleich ist
+          })
+      )
     );
 
     this.patients$.subscribe(data => {
