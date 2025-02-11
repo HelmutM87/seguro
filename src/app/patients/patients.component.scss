@@ -19,6 +19,12 @@
   display: flex;
   align-items: center;
   gap: 10px; /* Abstand zwischen Suchfeld und Button */
+
+  >button{
+    :hover {
+      cursor: pointer !important;
+    }
+  }
 }
 
 .search-field {

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, Timestamp } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatTableModule } from '@angular/material/table';
@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 interface Patient {
   id: string;
@@ -30,7 +30,8 @@ interface Patient {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.scss']
@@ -53,7 +54,7 @@ export class PatientsComponent {
         id: patient.id,
         lastName: patient['lastName'],
         firstName: patient['firstName'],
-        birthDate: patient['birthDate'] ? moment(patient['birthDate'].toDate()).format('DD.MM.YYYY') : '',
+        birthDate: this.convertTimestamp(patient['birthDate']),
         city: patient['city']
       })))
     );
@@ -62,6 +63,15 @@ export class PatientsComponent {
       this.allPatients = data;
       this.filteredPatients = [...this.allPatients];
     });
+  }
+
+  private convertTimestamp(timestamp: any): string {
+    if (timestamp instanceof Timestamp) {
+      return moment(timestamp.toDate()).format('DD.MM.YYYY');
+    } else if (typeof timestamp === 'string') {
+      return timestamp; // Falls bereits als String gespeichert, direkt zurückgeben
+    }
+    return ''; // Falls null oder undefined
   }
 
   filterPatients() {
