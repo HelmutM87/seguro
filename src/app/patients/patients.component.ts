@@ -19,6 +19,8 @@ interface Patient {
   firstName: string;
   birthDate: string;
   city: string;
+  phoneNumber: string; // Korrekte Schreibweise: phoneNumber
+  insuranceStatus: string;
 }
 
 @Component({
@@ -41,7 +43,7 @@ export class PatientsComponent {
   private router: Router = inject(Router);
 
   patients$: Observable<Patient[]>;
-  displayedColumns: string[] = ['id', 'lastName', 'firstName', 'birthDate', 'city'];
+  displayedColumns: string[] = ['id', 'lastName', 'firstName', 'birthDate', 'city', 'phone', 'status'];
 
   searchQuery: string = '';
   allPatients: Patient[] = [];
@@ -51,13 +53,14 @@ export class PatientsComponent {
     const patientsCollection = collection(this.firestore, 'customers');
     this.patients$ = collectionData(patientsCollection, { idField: 'id' }).pipe(
       map(patients => 
-        patients
-          .map((patient): Patient => ({
+        patients.map((patient): Patient => ({
             id: patient.id,
             lastName: patient['lastName'],
             firstName: patient['firstName'],
             birthDate: this.convertTimestamp(patient['birthDate']),
-            city: patient['city']
+            city: patient['city'],
+            phoneNumber: patient['phoneNumber'] || '', //  Sicherstellen, dass ein leerer String verwendet wird, falls phoneNumber nicht vorhanden ist.
+            insuranceStatus: patient['insuranceStatus'] === true ? 'aktiv' : (patient['insuranceStatus'] === false ? 'passiv' : patient['insuranceStatus'] || ''), // Konvertierung von Boolean zu String
           }))
           .sort((a, b) => {
             // Sortiere zuerst nach Nachnamen

@@ -64,6 +64,16 @@
   margin-top: 10px;
 }
 
+.status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: red;
+  font-weight: bold;
+}
+
 /* Optional: Responsive Design */
 @media (max-width: 768px) {
   .sidenav {
