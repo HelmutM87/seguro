@@ -36,9 +36,14 @@ export class PatientDetailComponent {
   }
 
   async loadPatientData() {
-    const patientId = this.route.snapshot.paramMap.get('id');
-    if (!patientId) return;
+  const patientId = this.route.snapshot.paramMap.get('id');
+  if (!patientId) {
+    console.error('Keine Patienten-ID gefunden');
+    this.loading = false;
+    return;
+  }
 
+  try {
     const patientDocRef = doc(this.firestore, `customers/${patientId}`);
     const docSnap = await getDoc(patientDocRef);
 
@@ -59,8 +64,12 @@ export class PatientDetailComponent {
     } else {
       console.error('Patient nicht gefunden');
     }
+  } catch (error) {
+    console.error('Fehler beim Laden der Patientendaten:', error);
+  } finally {
     this.loading = false;
   }
+}
 
   openEditDialog() {
     const dialogRef = this.dialog.open(DialogEditPatientComponent, {
