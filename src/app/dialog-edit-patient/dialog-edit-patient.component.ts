@@ -1,6 +1,6 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Firestore, doc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,8 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Platform } from '@angular/cdk/platform';
-
-// Moment.js importieren
+import { MatCheckboxModule } from '@angular/material/checkbox'; // Import für die Checkbox
 import moment from 'moment';
 
 // Datumsformat für die Anzeige definieren
@@ -40,6 +39,7 @@ const MY_DATE_FORMATS = {
     MatSelectModule,
     MatOptionModule,
     MatDatepickerModule,
+    MatCheckboxModule, // Checkbox-Modul hinzufügen
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-DE' },
@@ -59,15 +59,17 @@ export class DialogEditPatientComponent {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      firstName: [data.firstName || ''],
-      lastName: [data.lastName || ''],
-      birthDate: [data.birthDate ? moment(data.birthDate) : ''],
-      city: [data.city || ''],
-      documentNumber: [data.documentNumber || ''],
-      phoneNumber: [data.phoneNumber || ''],
-      insuredSince: [data.insuredSince ? moment(data.insuredSince) : ''],
-      paymentMethod: [data.paymentMethod || ''],
-      insuranceStatus: [data.insuranceStatus || false]
+      firstName: [data.firstName || '', Validators.required],
+      lastName: [data.lastName || '', Validators.required],
+      birthDate: [data.birthDate ? moment(data.birthDate) : '', Validators.required],
+      city: [data.city || '', Validators.required],
+      documentNumber: [data.documentNumber || '', Validators.required],
+      phoneNumber: [data.phoneNumber || '', Validators.required],
+      email: [data.email || '', [Validators.email]], // E-Mail-Feld mit Validator
+      insuredSince: [data.insuredSince ? moment(data.insuredSince) : '', Validators.required],
+      paymentMethod: [data.paymentMethod || '', Validators.required],
+      insuranceStatus: [data.insuranceStatus || false],
+      hasWhatsApp: [data.hasWhatsApp || false] // Neue Checkbox für WhatsApp
     });
   }
 

@@ -1,7 +1,9 @@
 <h2 mat-dialog-title>Versicherten hinzufügen</h2>
+
 <mat-dialog-content>
   <form [formGroup]="customerForm">
-    <div class="form-grid">  <mat-form-field appearance="outline">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
         <mat-label>Vorname</mat-label>
         <input matInput formControlName="firstName" required>
       </mat-form-field>
@@ -20,7 +22,8 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Wohnort</mat-label>
-        <input matInput formControlName="city" required>  </mat-form-field>
+        <input matInput formControlName="city" required>
+      </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Dokumentennummer (Carnet)</mat-label>
@@ -30,6 +33,11 @@
       <mat-form-field appearance="outline">
         <mat-label>Telefonnummer</mat-label>
         <input matInput type="tel" formControlName="phoneNumber" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>E-Mail</mat-label>
+        <input matInput type="email" formControlName="email">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -49,6 +57,7 @@
       </mat-form-field>
 
       <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox>
+      <mat-checkbox formControlName="hasWhatsApp">Hat WhatsApp</mat-checkbox>
     </div>
   </form>
 </mat-dialog-content>

@@ -1,65 +1,69 @@
-<h2>Patient bearbeiten</h2>
-<form [formGroup]="form">
-  <mat-form-field>
-    <mat-label>Vorname</mat-label>
-    <input matInput formControlName="firstName">
-  </mat-form-field>
+<h2 mat-dialog-title>Patient bearbeiten</h2>
 
-  <mat-form-field>
-    <mat-label>Nachname</mat-label>
-    <input matInput formControlName="lastName">
-  </mat-form-field>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstName" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Geburtsdatum</mat-label>
-    <input matInput [matDatepicker]="picker1" formControlName="birthDate">
-    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-    <mat-datepicker #picker1></mat-datepicker>
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="lastName" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Wohnort</mat-label>
-    <input matInput formControlName="city">
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Geburtsdatum</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="birthDate" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Dokumentnummer</mat-label>
-    <input matInput formControlName="documentNumber">
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Wohnort</mat-label>
+        <input matInput formControlName="city" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Telefon</mat-label>
-    <input matInput formControlName="phoneNumber">
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Dokumentennummer (Carnet)</mat-label>
+        <input matInput formControlName="documentNumber" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Versichert seit</mat-label>
-    <input matInput [matDatepicker]="picker2" formControlName="insuredSince">
-    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-    <mat-datepicker #picker2></mat-datepicker>
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Telefonnummer</mat-label>
+        <input matInput type="tel" formControlName="phoneNumber" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Zahlungsart</mat-label>
-    <mat-select formControlName="paymentMethod">
-      <mat-option value="Bar">Bar</mat-option>
-      <mat-option value="Überweisung">Überweisung</mat-option>
-      <mat-option value="QR-Code">QR-Code</mat-option>
-    </mat-select>
-  </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>E-Mail</mat-label>
+        <input matInput type="email" formControlName="email">
+      </mat-form-field>
 
-  <!-- <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox> -->
-  <mat-form-field>
-    <mat-label>Versicherungsstatus</mat-label>
-    <mat-select formControlName="insuranceStatus">
-      <mat-option [value]="true">Aktiv</mat-option>
-      <mat-option [value]="false">Inaktiv</mat-option>
-    </mat-select>
-  </mat-form-field>
-</form>
+      <mat-form-field appearance="outline">
+        <mat-label>Versichert seit</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="insuredSince" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Zahlungsart</mat-label>
+        <mat-select formControlName="paymentMethod" required>
+          <mat-option value="Bar">Bar</mat-option>
+          <mat-option value="Überweisung">Überweisung</mat-option>
+          <mat-option value="QR-Code">QR-Code</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox>
+      <mat-checkbox formControlName="hasWhatsApp">Hat WhatsApp</mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
 
 <mat-dialog-actions>
   <button mat-button (click)="close()">Abbrechen</button>
+  <button mat-button color="warn" (click)="deletePatient()">Löschen</button>
   <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="saveChanges()">Speichern</button>
-  <button mat-flat-button color="warn" (click)="deletePatient()">Löschen</button>
 </mat-dialog-actions>

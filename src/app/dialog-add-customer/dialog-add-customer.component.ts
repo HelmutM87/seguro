@@ -12,9 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NativeDateAdapter, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { Platform } from '@angular/cdk/platform';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-// Korrekter Import:
 import moment from 'moment'; // Default Import
-
 
 const MY_DATE_FORMATS = {
   parse: {
@@ -24,7 +22,6 @@ const MY_DATE_FORMATS = {
     dateInput: 'DD.MM.YYYY',
   },
 };
-
 
 @Component({
   selector: 'app-dialog-add-customer',
@@ -62,9 +59,11 @@ export class DialogAddCustomerComponent {
       city: ['', Validators.required],
       documentNumber: ['', Validators.required],
       phoneNumber: ['', Validators.required],
+      email: ['', [Validators.email]], // E-Mail-Feld mit Validator für E-Mail-Format
       insuredSince: ['', Validators.required],
       paymentMethod: ['', Validators.required],
-      insuranceStatus: [false]
+      insuranceStatus: [false],
+      hasWhatsApp: [false] // Neue Checkbox für WhatsApp
     });
   }
 
@@ -77,8 +76,8 @@ export class DialogAddCustomerComponent {
 
       const customerData = {
         ...formData,
-        birthDate: formData.birthDate ? moment(formData.birthDate).toDate() : null, // Kein Problem mehr
-        insuredSince: formData.insuredSince ? moment(formData.insuredSince).toDate() : null, // Kein Problem mehr
+        birthDate: formData.birthDate ? moment(formData.birthDate).toDate() : null,
+        insuredSince: formData.insuredSince ? moment(formData.insuredSince).toDate() : null,
       };
 
       try {

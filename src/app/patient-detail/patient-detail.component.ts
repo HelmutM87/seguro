@@ -8,16 +8,18 @@ import moment from 'moment';
 import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogEditPatientComponent } from '../dialog-edit-patient/dialog-edit-patient.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-patient-detail',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     MatCardModule,
     MatButtonModule,
     RouterModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule
   ],
   templateUrl: './patient-detail.component.html',
   styleUrls: ['./patient-detail.component.scss'],
@@ -36,40 +38,42 @@ export class PatientDetailComponent {
   }
 
   async loadPatientData() {
-  const patientId = this.route.snapshot.paramMap.get('id');
-  if (!patientId) {
-    console.error('Keine Patienten-ID gefunden');
-    this.loading = false;
-    return;
-  }
-
-  try {
-    const patientDocRef = doc(this.firestore, `customers/${patientId}`);
-    const docSnap = await getDoc(patientDocRef);
-
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      this.patient = {
-        id: patientId,
-        lastName: data['lastName'] || '',
-        firstName: data['firstName'] || '',
-        birthDate: this.convertTimestamp(data['birthDate']),
-        city: data['city'] || '',
-        documentNumber: data['documentNumber'] || '',
-        phoneNumber: data['phoneNumber'] || '',
-        insuredSince: this.convertTimestamp(data['insuredSince']),
-        paymentMethod: data['paymentMethod'] || '',
-        insuranceStatus: data['insuranceStatus'] || ''
-      };
-    } else {
-      console.error('Patient nicht gefunden');
+    const patientId = this.route.snapshot.paramMap.get('id');
+    if (!patientId) {
+      console.error('Keine Patienten-ID gefunden');
+      this.loading = false;
+      return;
     }
-  } catch (error) {
-    console.error('Fehler beim Laden der Patientendaten:', error);
-  } finally {
-    this.loading = false;
+
+    try {
+      const patientDocRef = doc(this.firestore, `customers/${patientId}`);
+      const docSnap = await getDoc(patientDocRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        this.patient = {
+          id: patientId,
+          lastName: data['lastName'] || '',
+          firstName: data['firstName'] || '',
+          birthDate: this.convertTimestamp(data['birthDate']),
+          city: data['city'] || '',
+          documentNumber: data['documentNumber'] || '',
+          phoneNumber: data['phoneNumber'] || '',
+          email: data['email'] || '', // Neues E-Mail-Feld
+          insuredSince: this.convertTimestamp(data['insuredSince']),
+          paymentMethod: data['paymentMethod'] || '',
+          insuranceStatus: data['insuranceStatus'] || false,
+          hasWhatsApp: data['hasWhatsApp'] || false // Neue WhatsApp-Checkbox
+        };
+      } else {
+        console.error('Patient nicht gefunden');
+      }
+    } catch (error) {
+      console.error('Fehler beim Laden der Patientendaten:', error);
+    } finally {
+      this.loading = false;
+    }
   }
-}
 
   openEditDialog() {
     const dialogRef = this.dialog.open(DialogEditPatientComponent, {
