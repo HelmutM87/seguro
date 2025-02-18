@@ -12,7 +12,9 @@
 
   <mat-form-field>
     <mat-label>Geburtsdatum</mat-label>
-    <input matInput type="date" formControlName="birthDate">
+    <input matInput [matDatepicker]="picker1" formControlName="birthDate">
+    <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+    <mat-datepicker #picker1></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field>
@@ -32,14 +34,21 @@
 
   <mat-form-field>
     <mat-label>Versichert seit</mat-label>
-    <input matInput type="date" formControlName="insuredSince">
+    <input matInput [matDatepicker]="picker2" formControlName="insuredSince">
+    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+    <mat-datepicker #picker2></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Zahlungsmethode</mat-label>
-    <input matInput formControlName="paymentMethod">
+    <mat-label>Zahlungsart</mat-label>
+    <mat-select formControlName="paymentMethod">
+      <mat-option value="Bar">Bar</mat-option>
+      <mat-option value="Überweisung">Überweisung</mat-option>
+      <mat-option value="QR-Code">QR-Code</mat-option>
+    </mat-select>
   </mat-form-field>
 
+  <!-- <mat-checkbox formControlName="insuranceStatus">Versicherung aktiv</mat-checkbox> -->
   <mat-form-field>
     <mat-label>Versicherungsstatus</mat-label>
     <mat-select formControlName="insuranceStatus">
@@ -47,10 +56,10 @@
       <mat-option [value]="false">Inaktiv</mat-option>
     </mat-select>
   </mat-form-field>
-
-  <div class="actions">
-    <button mat-button (click)="close()">Abbrechen</button>
-    <button mat-button color="primary" (click)="saveChanges()">Speichern</button>
-    <button mat-button color="warn" (click)="deletePatient()">Löschen</button>
-  </div>
 </form>
+
+<mat-dialog-actions>
+  <button mat-button (click)="close()">Abbrechen</button>
+  <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="saveChanges()">Speichern</button>
+  <button mat-flat-button color="warn" (click)="deletePatient()">Löschen</button>
+</mat-dialog-actions>
