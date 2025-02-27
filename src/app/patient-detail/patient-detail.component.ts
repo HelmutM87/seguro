@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Firestore, doc, getDoc, collection, query, where, orderBy, getDocs, updateDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -98,6 +98,9 @@ export class PatientDetailComponent {
           paid: data['paid']
         };
       });
+
+      // Überprüfe, ob der Patient 3 oder mehr unbezahlte Rechnungen hat und aktualisiere ggf. den Versicherungsstatus
+      await this.checkAndUpdateInsuranceStatus();
     } catch (error) {
       console.error('Fehler beim Laden der Rechnungen:', error);
     }
@@ -108,8 +111,26 @@ export class PatientDetailComponent {
       const db = this.firestore;
       const invoiceRef = doc(db, 'invoices', invoiceId);
       await updateDoc(invoiceRef, { paid });
+      // Nach Änderung der Rechnung neu laden, damit auch der Versicherungsstatus aktualisiert wird
+      await this.loadInvoices(this.patient.id);
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Bezahlstatus:', error);
+    }
+  }
+
+  async checkAndUpdateInsuranceStatus() {
+    // Zähle alle unbezahlten Rechnungen
+    const unpaidCount = this.invoices.filter(invoice => !invoice.paid).length;
+    // Falls 3 oder mehr unbezahlte Rechnungen vorliegen und der Patient noch als aktiv gilt (insuranceStatus true)
+    if (unpaidCount >= 3 && this.patient.insuranceStatus) {
+      try {
+        const patientRef = doc(this.firestore, `customers/${this.patient.id}`);
+        await updateDoc(patientRef, { insuranceStatus: false });
+        this.patient.insuranceStatus = false;
+        console.log('Versicherungsstatus wurde auf passiv gesetzt, da mindestens 3 unbezahlte Rechnungen vorliegen.');
+      } catch (error) {
+        console.error('Fehler beim Aktualisieren des Versicherungsstatus:', error);
+      }
     }
   }
 
