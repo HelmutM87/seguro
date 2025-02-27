@@ -9,55 +9,59 @@ admin.initializeApp();
 setGlobalOptions({region: "southamerica-east1"});
 
 /**
- * Stündliche Rechnungsgenerierung
+ * Tägliche Rechnungserzeugung und Statusüberprüfung
  */
-export const createHourlyInvoices = onSchedule(
+export const createDailyInvoicesAndCheckStatus = onSchedule(
   {
-    schedule: "0 * * * *",
+    schedule: "0 0 * * *", // Jeden Tag um Mitternacht
     timeZone: "America/La_Paz",
   },
   async () => {
     const today = new Date();
+    const db = admin.firestore();
 
     try {
-      // Patienten abrufen
-      const patients = await getAllPatients();
+      // Alle Patienten abrufen
+      const patientsSnapshot = await db.collection("customers").get();
+      const batch = db.batch();
+      const invoicesCollection = db.collection("invoices");
 
-      // Batch-Operation für Firestore
-      const batch = admin.firestore().batch();
-      const invoicesCollection = admin.firestore().collection("invoices");
-
-      // Rechnungen für jeden Patienten erstellen
-      patients.forEach((patient) => {
+      // Für jeden Patienten eine neue Rechnung erstellen
+      patientsSnapshot.forEach((doc) => {
+        const patientId = doc.id;
         const newInvoiceRef = invoicesCollection.doc();
-        batch.set(newInvoiceRef,
-          {
-            patientId: patient.id,
-            date: today,
-            amount: 200,
-            description: "Monatsbeitrag",
-            paid: false,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
+        batch.set(newInvoiceRef, {
+          patientId: patientId,
+          date: today,
+          amount: 200,
+          description: "Monatsbeitrag",
+          paid: false,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
       });
 
-      // Batch ausführen
+      // Batch-Operation ausführen
       await batch.commit();
+      console.log("Tägliche Rechnungen wurden für alle Patienten erstellt.");
+
+      // Für jeden Patienten prüfen, ob 3 oder mehr unbezahlte Rechnungen vorliegen
+      for (const doc of patientsSnapshot.docs) {
+        const patientId = doc.id;
+
+        // **Geänderte Abfrage ohne query()**
+        const invoicesSnapshot = await db.collection("invoices")
+          .where("patientId", "==", patientId)
+          .where("paid", "==", false)
+          .get();
+
+        if (invoicesSnapshot.size >= 3) {
+          const patientRef = db.collection("customers").doc(patientId);
+          await patientRef.update({insuranceStatus: false});
+          console.log(`Patient ${patientId} wurde auf passiv gesetzt (≥3 unbezahlte Rechnungen).`);
+        }
+      }
     } catch (error) {
-      console.error("Fehler bei der Rechnungsgenerierung:", error);
+      console.error("Fehler bei der täglichen Rechnungserzeugung und Statusüberprüfung:", error);
     }
   }
 );
-
-/**
- * Gibt eine Liste aller Patienten aus der Firestore-Datenbank zurück.
- */
-async function getAllPatients(): Promise<{id:string}[]> {
-  try {
-    const snapshot = await admin.firestore().collection("customers").get();
-    return snapshot.docs.map((doc) => ({id: doc.id}));
-  } catch (error) {
-    console.error("Fehler beim Laden der Patienten:", error);
-    return [];
-  }
-}
