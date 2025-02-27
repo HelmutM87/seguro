@@ -31,12 +31,26 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 })
 export class DashboardComponent {
   private firestore: Firestore = inject(Firestore);
-  insuredPeopleCount$: Observable<number>;  // Typ auf number ändern
+  insuredPeopleCount$: Observable<number>; // Gesamtanzahl der Patienten
+  activeInsuredCount$: Observable<number>; // Anzahl der aktiv Versicherten
+  inactiveInsuredCount$: Observable<number>; // Anzahl der passiv Versicherten
 
   constructor(private dialog: MatDialog) {
     const customersCollection = collection(this.firestore, 'customers');
+    
+    // Gesamtanzahl der Patienten
     this.insuredPeopleCount$ = collectionData(customersCollection).pipe(
-      map(insuredPeople => insuredPeople.length) // Anzahl der Einträge in der Collection berechnen
+      map(patients => patients.length)
+    );
+
+    // Anzahl der aktiv Versicherten
+    this.activeInsuredCount$ = collectionData(customersCollection).pipe(
+      map(patients => patients.filter(patient => patient['insuranceStatus'] === true).length)
+    );
+
+    // Anzahl der passiv Versicherten
+    this.inactiveInsuredCount$ = collectionData(customersCollection).pipe(
+      map(patients => patients.filter(patient => patient['insuranceStatus'] === false).length)
     );
   }
 
