@@ -29,3 +29,31 @@
     justify-content: center;
   }
   
+  /* patient-detail.component.scss */
+.invoices-section {
+  margin-top: 20px;
+}
+
+.invoice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.invoice-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.invoice-date {
+  min-width: 100px;
+}
+
+.invoice-amount {
+  min-width: 80px;
+  font-weight: bold;
+}

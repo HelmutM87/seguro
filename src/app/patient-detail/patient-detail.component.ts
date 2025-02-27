@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,7 @@ export class PatientDetailComponent {
   private router = inject(Router);
 
   patient: any = null;
+  invoices: any[] = [];
   loading = true;
 
   constructor() {
@@ -46,6 +47,7 @@ export class PatientDetailComponent {
     }
 
     try {
+      // Patientendaten laden
       const patientDocRef = doc(this.firestore, `customers/${patientId}`);
       const docSnap = await getDoc(patientDocRef);
 
@@ -59,12 +61,15 @@ export class PatientDetailComponent {
           city: data['city'] || '',
           documentNumber: data['documentNumber'] || '',
           phoneNumber: data['phoneNumber'] || '',
-          email: data['email'] || '', // Neues E-Mail-Feld
+          email: data['email'] || '',
           insuredSince: this.convertTimestamp(data['insuredSince']),
           paymentMethod: data['paymentMethod'] || '',
           insuranceStatus: data['insuranceStatus'] || false,
-          hasWhatsApp: data['hasWhatsApp'] || false // Neue WhatsApp-Checkbox
+          hasWhatsApp: data['hasWhatsApp'] || false
         };
+
+        // Rechnungen laden
+        await this.loadInvoices(patientId);
       } else {
         console.error('Patient nicht gefunden');
       }
@@ -72,6 +77,39 @@ export class PatientDetailComponent {
       console.error('Fehler beim Laden der Patientendaten:', error);
     } finally {
       this.loading = false;
+    }
+  }
+
+  async loadInvoices(patientId: string) {
+    try {
+      const db = this.firestore;
+      const q = query(
+        collection(db, 'invoices'),
+        where('patientId', '==', patientId)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      this.invoices = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          date: this.convertTimestamp(data['date']),
+          amount: data['amount'],
+          paid: data['paid']
+        };
+      });
+    } catch (error) {
+      console.error('Fehler beim Laden der Rechnungen:', error);
+    }
+  }
+
+  async updateInvoiceStatus(invoiceId: string, paid: boolean) {
+    try {
+      const db = this.firestore;
+      const invoiceRef = doc(db, 'invoices', invoiceId);
+      await updateDoc(invoiceRef, { paid });
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Bezahlstatus:', error);
     }
   }
 
@@ -83,14 +121,17 @@ export class PatientDetailComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'deleted') {
-        this.router.navigate(['/patients']); // Falls gelöscht, zur Patientenliste navigieren
+        this.router.navigate(['/patients']);
       } else if (result) {
-        this.loadPatientData(); // Falls gespeichert, Daten neu laden
+        this.loadPatientData();
       }
     });
   }
 
   private convertTimestamp(timestamp: any): string {
-    return timestamp instanceof Timestamp ? moment(timestamp.toDate()).format('DD.MM.YYYY') : '';
+    if (timestamp?.toDate) {
+      return moment(timestamp.toDate()).format('DD.MM.YYYY');
+    }
+    return moment(timestamp).format('DD.MM.YYYY');
   }
 }

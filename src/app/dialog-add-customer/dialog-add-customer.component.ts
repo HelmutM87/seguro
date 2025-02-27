@@ -67,28 +67,42 @@ export class DialogAddCustomerComponent {
     });
   }
 
-  async saveCustomer() {
-    if (this.customerForm.valid) {
-      const db = getFirestore();
-      const customersCollection = collection(db, 'customers');
+  // In dialog-add-customer.component.ts
+async saveCustomer() {
+  if (this.customerForm.valid) {
+    const db = getFirestore();
+    const customersCollection = collection(db, 'customers');
 
-      const formData = this.customerForm.value;
+    const formData = this.customerForm.value;
 
-      const customerData = {
-        ...formData,
-        birthDate: formData.birthDate ? moment(formData.birthDate).toDate() : null,
-        insuredSince: formData.insuredSince ? moment(formData.insuredSince).toDate() : null,
-      };
+    const customerData = {
+      ...formData,
+      birthDate: formData.birthDate ? moment(formData.birthDate).toDate() : null,
+      insuredSince: formData.insuredSince ? moment(formData.insuredSince).toDate() : null,
+    };
 
-      try {
-        const docRef = await addDoc(customersCollection, customerData);
-        const addedCustomerData = { ...customerData, id: docRef.id };
-        this.dialogRef.close(addedCustomerData);
-      } catch (error) {
-        console.error('Fehler beim Hinzufügen des Kunden:', error);
-      }
+    try {
+      // Patient speichern
+      const docRef = await addDoc(customersCollection, customerData);
+      const patientId = docRef.id;
+
+      // Registrierungsrechnung erstellen
+      const invoicesCollection = collection(db, 'invoices');
+      await addDoc(invoicesCollection, {
+        patientId: patientId,
+        date: new Date(), // Aktuelles Datum
+        amount: 1000,
+        description: 'Registrierungsgebühr',
+        paid: false,
+        createdAt: new Date()
+      });
+
+      this.dialogRef.close({ ...customerData, id: patientId });
+    } catch (error) {
+      console.error('Fehler:', error);
     }
   }
+}
 
   closeDialog() {
     this.dialogRef.close();

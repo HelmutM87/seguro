@@ -20,6 +20,28 @@
   </mat-card>
 </div>
 
+<!-- Rechnungsabschnitt -->
+<mat-card class="invoice-section">
+  <mat-card-header>
+    <mat-card-title>Rechnungen</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="invoice-list">
+      <div *ngFor="let invoice of invoices" class="invoice-item">
+        <span class="invoice-date">{{ invoice.date }}</span>
+        <span>Registrierung</span>
+        <span class="invoice-amount">{{ invoice.amount }} Bs.</span>
+        <mat-checkbox 
+          [checked]="invoice.paid"
+          (change)="updateInvoiceStatus(invoice.id, $event.checked)"
+        >
+          Bezahlt
+        </mat-checkbox>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
 <ng-template #loadingTemplate>
   <p>Lade Patientendaten...</p>
 </ng-template>
