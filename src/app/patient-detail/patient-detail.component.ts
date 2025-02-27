@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Firestore, doc, getDoc, collection, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, where, getDocs, updateDoc, addDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogEditPatientComponent } from '../dialog-edit-patient/dialog-edit-patient.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { increment } from 'firebase/firestore';
 
 @Component({
   selector: 'app-patient-detail',
@@ -106,22 +107,77 @@ export class PatientDetailComponent {
     }
   }
 
-  async updateInvoiceStatus(invoiceId: string, paid: boolean) {
+  async updateInvoiceStatus(invoiceId: string, newPaid: boolean) {
     try {
       const db = this.firestore;
       const invoiceRef = doc(db, 'invoices', invoiceId);
-      await updateDoc(invoiceRef, { paid });
-      // Nach Änderung der Rechnung neu laden, damit auch der Versicherungsstatus aktualisiert wird
+      
+      // Hole das aktuelle Rechnungsdokument, um den alten Status zu kennen
+      const invoiceSnap = await getDoc(invoiceRef);
+      if (!invoiceSnap.exists()) {
+        console.error('Rechnung nicht gefunden');
+        return;
+      }
+      const invoiceData = invoiceSnap.data();
+      const previousPaid = invoiceData['paid'];
+
+      // Rechnung aktualisieren
+      await updateDoc(invoiceRef, { paid: newPaid });
+      
+      // Falls die Rechnung von unpaid zu paid geändert wurde, aktualisiere Einkommen und Kontostand
+      if (!previousPaid && newPaid) {
+        const amount = invoiceData['amount'] || 0;
+        await this.updateIncomeAndBalance(amount);
+      }
+      
+      // Rechnungen neu laden, um die UI zu aktualisieren
       await this.loadInvoices(this.patient.id);
     } catch (error) {
       console.error('Fehler beim Aktualisieren des Bezahlstatus:', error);
     }
   }
 
+  async updateIncomeAndBalance(amount: number) {
+    const db = this.firestore;
+    
+    // 1. Kontostand aktualisieren (Dokument "account/balance")
+    const balanceRef = doc(db, 'account', 'balance');
+    await updateDoc(balanceRef, {
+      currentBalance: increment(amount)
+    });
+    
+    // 2. Einkommen für den aktuellen Monat aktualisieren
+    const currentMonth = moment().format('MM');  // Falls als Zahl gespeichert, verwende parseInt(moment().format('MM'))
+    const currentYear = moment().format('YYYY');
+    const incomeCollection = collection(db, 'income');
+    
+    // Abfrage des Einkommen-Dokuments für den aktuellen Monat und das aktuelle Jahr
+    const incomeQuery = query(
+      incomeCollection,
+      where('month', '==', currentMonth),
+      where('year', '==', currentYear)
+    );
+    const incomeSnapshot = await getDocs(incomeQuery);
+    if (!incomeSnapshot.empty) {
+      const incomeDoc = incomeSnapshot.docs[0];
+      await updateDoc(doc(db, 'income', incomeDoc.id), {
+        revenue: increment(amount)
+      });
+    } else {
+      // Falls noch kein Dokument existiert, erstelle ein neues
+      await addDoc(incomeCollection, {
+        month: currentMonth,
+        year: currentYear,
+        revenue: amount,
+        outstanding: 0
+      });
+    }
+  }
+
   async checkAndUpdateInsuranceStatus() {
     // Zähle alle unbezahlten Rechnungen
     const unpaidCount = this.invoices.filter(invoice => !invoice.paid).length;
-    // Falls 3 oder mehr unbezahlte Rechnungen vorliegen und der Patient noch als aktiv gilt (insuranceStatus true)
+    // Falls 3 oder mehr unbezahlte Rechnungen vorliegen und der Patient noch als aktiv gilt
     if (unpaidCount >= 3 && this.patient.insuranceStatus) {
       try {
         const patientRef = doc(this.firestore, `customers/${this.patient.id}`);

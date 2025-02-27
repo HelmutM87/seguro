@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, getDoc, updateDoc, setDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -36,7 +36,6 @@ export class IncomeComponent implements OnInit {
   }
 
   async loadCurrentBalance(): Promise<void> {
-    // Angenommen, du hast ein Dokument "account/balance" mit dem Feld "currentBalance"
     const balanceDocRef = doc(this.firestore, 'account/balance');
     const balanceSnap = await getDoc(balanceDocRef);
     if (balanceSnap.exists()) {
@@ -48,7 +47,7 @@ export class IncomeComponent implements OnInit {
   }
 
   loadInvoicesData(): void {
-    // Wir erzeugen hier eine Übersicht für die letzten 12 Monate (inkl. dem laufenden Monat)
+    // Übersicht für die letzten 12 Monate (inkl. dem laufenden Monat)
     const startDate = moment().subtract(11, 'months').startOf('month');
     const endDate = moment().endOf('month');
     const tempData: MonthData[] = [];
@@ -67,12 +66,12 @@ export class IncomeComponent implements OnInit {
     // Alle Rechnungen aus der Collection abrufen
     const invoicesCollection = collection(this.firestore, 'invoices');
     collectionData(invoicesCollection).subscribe((invoices: any[]) => {
-      // Reset der Summen, falls sich Daten ändern
+      // Summen zurücksetzen
       tempData.forEach(entry => {
         entry.revenue = 0;
         entry.outstanding = 0;
       });
-      // Gruppiere die Rechnungen nach Monat und Jahr
+      // Gruppiere Rechnungen nach Monat und Jahr
       invoices.forEach(invoice => {
         let invoiceDate: moment.Moment;
         if (invoice.date && invoice.date.toDate) {
@@ -80,7 +79,6 @@ export class IncomeComponent implements OnInit {
         } else {
           invoiceDate = moment(invoice.date);
         }
-        // Nur Rechnungen innerhalb des Zeitraums berücksichtigen
         if (invoiceDate.isBetween(startDate, endDate, 'month', '[]')) {
           const monthYearKey = invoiceDate.format('MMMM') + '-' + invoiceDate.year();
           const entry = tempData.find(m => (m.month + '-' + m.year) === monthYearKey);
@@ -94,6 +92,15 @@ export class IncomeComponent implements OnInit {
         }
       });
       this.monthsData = tempData;
+      this.updateCurrentBalance();
     });
+  }
+
+  async updateCurrentBalance(): Promise<void> {
+    // Summiere alle Einnahmen (revenue) aus den Monatsdaten
+    const newBalance = this.monthsData.reduce((sum, entry) => sum + entry.revenue, 0);
+    const balanceDocRef = doc(this.firestore, 'account/balance');
+    await setDoc(balanceDocRef, { currentBalance: newBalance }, { merge: true });
+    this.currentBalance = newBalance;
   }
 }

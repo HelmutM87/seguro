@@ -46,15 +46,16 @@
           </mat-card-content>
         </mat-card>
 
-        <!-- Einnahmen-Karte -->
-        <mat-card class="dashboard-card" routerLink="/income" routerLinkActive="active" style="cursor:pointer;">
-          <mat-card-header>
-            <mat-card-title>Einnahmen</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p class="card-value">0 Peso</p>
-          </mat-card-content>
-        </mat-card>
+   <!-- Einnahmen-Karte -->
+<mat-card class="dashboard-card" routerLink="/income" routerLinkActive="active" style="cursor:pointer;">
+  <mat-card-header>
+    <mat-card-title>Einnahmen</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p class="card-value">{{ currentMonthRevenue$ | async }} Bs</p>
+  </mat-card-content>
+</mat-card>
+
 
         <!-- Ausgaben-Karte -->
         <mat-card class="dashboard-card" routerLink="/expenses" routerLinkActive="active" style="cursor:pointer;">
@@ -62,7 +63,7 @@
             <mat-card-title>Ausgaben</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <p class="card-value">0 Peso</p>
+            <p class="card-value">0 Bs</p>
           </mat-card-content>
         </mat-card>
 
