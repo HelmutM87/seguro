@@ -1,0 +1,43 @@
+<div class="income-container">
+    <!-- Linke Seite: Aktueller Kontostand -->
+    <div class="balance-card">
+      <mat-card>
+        <mat-card-title>Aktueller Kontostand</mat-card-title>
+        <mat-card-content>
+          <h2>{{ currentBalance | number:'1.2-2' }} Bs.</h2>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+    <!-- Rechte Seite: Monatliche Übersicht -->
+    <div class="invoices-table">
+      <mat-card>
+        <mat-card-title>Monatliche Übersicht</mat-card-title>
+        <mat-card-content>
+          <table mat-table [dataSource]="monthsData" class="mat-elevation-z8">
+            <!-- Monat und Jahr Spalte -->
+            <ng-container matColumnDef="monthYear">
+              <th mat-header-cell *matHeaderCellDef> Monat / Jahr </th>
+              <td mat-cell *matCellDef="let element"> {{ element.month }} {{ element.year }} </td>
+            </ng-container>
+  
+            <!-- Einnahmen-Spalte -->
+            <ng-container matColumnDef="revenue">
+              <th mat-header-cell *matHeaderCellDef> Einnahmen </th>
+              <td mat-cell *matCellDef="let element"> {{ element.revenue }} Bs. </td>
+            </ng-container>
+  
+            <!-- Ausstehende Rechnungen-Spalte -->
+            <ng-container matColumnDef="outstanding">
+              <th mat-header-cell *matHeaderCellDef> Ausstehend </th>
+              <td mat-cell *matCellDef="let element"> {{ element.outstanding }} Bs. </td>
+            </ng-container>
+  
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  

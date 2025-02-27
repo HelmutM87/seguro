@@ -18,9 +18,9 @@
 
   <div *ngIf="filteredPatients.length > 0; else noPatients">
     <table mat-table [dataSource]="filteredPatients" class="mat-elevation-z8">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef> ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      <ng-container matColumnDef="documentNumber">
+        <th mat-header-cell *matHeaderCellDef> Carnet </th>
+        <td mat-cell *matCellDef="let element"> {{element.documentNumber}} </td>
       </ng-container>
 
       <ng-container matColumnDef="lastName">

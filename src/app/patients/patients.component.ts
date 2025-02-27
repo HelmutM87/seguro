@@ -14,13 +14,14 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 
 interface Patient {
-  id: string;
+  documentNumber: string;
   lastName: string;
   firstName: string;
   birthDate: string;
   city: string;
   phoneNumber: string;
   insuranceStatus: string;
+  id?: string;
 }
 
 @Component({
@@ -44,7 +45,7 @@ export class PatientsComponent {
   private route: ActivatedRoute = inject(ActivatedRoute);
 
   patients$: Observable<Patient[]>;
-  displayedColumns: string[] = ['id', 'lastName', 'firstName', 'birthDate', 'city', 'phone', 'status'];
+  displayedColumns: string[] = ['documentNumber', 'lastName', 'firstName', 'birthDate', 'city', 'phone', 'status'];
   searchQuery: string = '';
   allPatients: Patient[] = [];
   filteredPatients: Patient[] = [];
@@ -52,16 +53,17 @@ export class PatientsComponent {
   constructor(public dialog: MatDialog) {
     const patientsCollection = collection(this.firestore, 'customers');
     this.patients$ = collectionData(patientsCollection, { idField: 'id' }).pipe(
-      map(patients => 
+      map(patients =>
         patients.map((patient): Patient => ({
-            id: patient.id,
-            lastName: patient['lastName'],
-            firstName: patient['firstName'],
-            birthDate: this.convertTimestamp(patient['birthDate']),
-            city: patient['city'],
-            phoneNumber: patient['phoneNumber'] || '',
-            insuranceStatus: patient['insuranceStatus'] === true ? 'aktiv' : (patient['insuranceStatus'] === false ? 'passiv' : patient['insuranceStatus'] || ''),
-          }))
+          id: patient['id'],
+          documentNumber: patient['documentNumber'],
+          lastName: patient['lastName'],
+          firstName: patient['firstName'],
+          birthDate: this.convertTimestamp(patient['birthDate']),
+          city: patient['city'],
+          phoneNumber: patient['phoneNumber'] || '',
+          insuranceStatus: patient['insuranceStatus'] === true ? 'aktiv' : (patient['insuranceStatus'] === false ? 'passiv' : patient['insuranceStatus'] || ''),
+        }))
           .sort((a, b) => {
             if (a.lastName.toLowerCase() < b.lastName.toLowerCase()) return -1;
             if (a.lastName.toLowerCase() > b.lastName.toLowerCase()) return 1;
@@ -117,8 +119,8 @@ export class PatientsComponent {
     );
   }
 
-  viewPatientDetails(patientId: string) {
-    this.router.navigate(['/patients', patientId]);
+  viewPatientDetails(documentNumber: string) {
+    this.router.navigate(['/patients', documentNumber]);
   }
 
   openDialog() {
