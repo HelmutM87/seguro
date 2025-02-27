@@ -5,12 +5,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { Observable } from 'rxjs';
-import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
-import { RouterModule, Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { map } from 'rxjs/operators';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,32 +30,33 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 })
 export class DashboardComponent {
   private firestore: Firestore = inject(Firestore);
-  insuredPeopleCount$: Observable<number>; // Gesamtanzahl der Patienten
-  activeInsuredCount$: Observable<number>; // Anzahl der aktiv Versicherten
-  inactiveInsuredCount$: Observable<number>; // Anzahl der passiv Versicherten
+  private router: Router = inject(Router);
 
-  constructor(private dialog: MatDialog) {
-    const customersCollection = collection(this.firestore, 'customers');
-    
-    // Gesamtanzahl der Patienten
-    this.insuredPeopleCount$ = collectionData(customersCollection).pipe(
-      map(patients => patients.length)
-    );
+  insuredPeopleCount$ = collectionData(collection(this.firestore, 'customers')).pipe(
+    map(patients => patients.length)
+  );
+  activeInsuredCount$ = collectionData(collection(this.firestore, 'customers')).pipe(
+    map(patients => patients.filter(patient => patient['insuranceStatus'] === true).length)
+  );
+  inactiveInsuredCount$ = collectionData(collection(this.firestore, 'customers')).pipe(
+    map(patients => patients.filter(patient => patient['insuranceStatus'] === false).length)
+  );
+  unpaidInvoicesCount$ = collectionData(
+    // Alle Rechnungen mit paid==false abrufen
+    // (Da hier keine Patientenspezifische Filterung erfolgt, werden alle offenen Rechnungen im System gezählt)
+    collection(this.firestore, 'invoices')
+  ).pipe(
+    map((invoices: any[]) => invoices.filter(inv => inv.paid === false).length)
+  );
 
-    // Anzahl der aktiv Versicherten
-    this.activeInsuredCount$ = collectionData(customersCollection).pipe(
-      map(patients => patients.filter(patient => patient['insuranceStatus'] === true).length)
-    );
-
-    // Anzahl der passiv Versicherten
-    this.inactiveInsuredCount$ = collectionData(customersCollection).pipe(
-      map(patients => patients.filter(patient => patient['insuranceStatus'] === false).length)
-    );
-  }
+  constructor(private dialog: MatDialog) {}
 
   openAddCustomerDialog() {
-    this.dialog.open(DialogAddCustomerComponent, {
-      width: '400px'
-    });
+    this.dialog.open(DialogAddCustomerComponent, { width: '400px' });
+  }
+
+  goToOpenInvoices() {
+    // Navigiere zur Patientenliste und übergebe den Query-Parameter "openInvoices=true"
+    this.router.navigate(['/patients'], { queryParams: { openInvoices: true } });
   }
 }

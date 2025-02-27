@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Firestore, collection, collectionData, Timestamp } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, Timestamp, query, where, getDocs } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MatTableModule } from '@angular/material/table';
@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { DialogAddCustomerComponent } from '../dialog-add-customer/dialog-add-customer.component';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 
 interface Patient {
   id: string;
@@ -19,7 +19,7 @@ interface Patient {
   firstName: string;
   birthDate: string;
   city: string;
-  phoneNumber: string; // Korrekte Schreibweise: phoneNumber
+  phoneNumber: string;
   insuranceStatus: string;
 }
 
@@ -41,10 +41,10 @@ interface Patient {
 export class PatientsComponent {
   private firestore: Firestore = inject(Firestore);
   private router: Router = inject(Router);
+  private route: ActivatedRoute = inject(ActivatedRoute);
 
   patients$: Observable<Patient[]>;
   displayedColumns: string[] = ['id', 'lastName', 'firstName', 'birthDate', 'city', 'phone', 'status'];
-
   searchQuery: string = '';
   allPatients: Patient[] = [];
   filteredPatients: Patient[] = [];
@@ -59,44 +59,61 @@ export class PatientsComponent {
             firstName: patient['firstName'],
             birthDate: this.convertTimestamp(patient['birthDate']),
             city: patient['city'],
-            phoneNumber: patient['phoneNumber'] || '', //  Sicherstellen, dass ein leerer String verwendet wird, falls phoneNumber nicht vorhanden ist.
-            insuranceStatus: patient['insuranceStatus'] === true ? 'aktiv' : (patient['insuranceStatus'] === false ? 'passiv' : patient['insuranceStatus'] || ''), // Konvertierung von Boolean zu String
+            phoneNumber: patient['phoneNumber'] || '',
+            insuranceStatus: patient['insuranceStatus'] === true ? 'aktiv' : (patient['insuranceStatus'] === false ? 'passiv' : patient['insuranceStatus'] || ''),
           }))
           .sort((a, b) => {
-            // Sortiere zuerst nach Nachnamen
             if (a.lastName.toLowerCase() < b.lastName.toLowerCase()) return -1;
             if (a.lastName.toLowerCase() > b.lastName.toLowerCase()) return 1;
-
-            // Wenn die Nachnamen gleich sind, sortiere nach Vornamen
             if (a.firstName.toLowerCase() < b.firstName.toLowerCase()) return -1;
             if (a.firstName.toLowerCase() > b.firstName.toLowerCase()) return 1;
-
-            return 0; // Falls alles gleich ist
+            return 0;
           })
       )
     );
 
     this.patients$.subscribe(data => {
       this.allPatients = data;
+      // Standardmäßig alle Patienten anzeigen
       this.filteredPatients = [...this.allPatients];
+
+      // Wenn Query-Parameter openInvoices=true, dann filtere Patienten, die offene Rechnungen haben
+      if (this.route.snapshot.queryParams['openInvoices']) {
+        this.filterPatientsWithOpenInvoices();
+      }
     });
+  }
+
+  private async filterPatientsWithOpenInvoices() {
+    try {
+      // Hole alle Rechnungen, bei denen paid == false
+      const invoicesCollection = collection(this.firestore, 'invoices');
+      const q = query(invoicesCollection, where('paid', '==', false));
+      const querySnapshot = await getDocs(q);
+      // Sammle alle eindeutigen Patient-IDs mit offenen Rechnungen
+      const openPatientIds = new Set(querySnapshot.docs.map(doc => doc.data()['patientId']));
+      // Filtere die Patientenliste
+      this.filteredPatients = this.allPatients.filter(patient => openPatientIds.has(patient.id));
+    } catch (error) {
+      console.error('Fehler beim Abrufen offener Rechnungen:', error);
+    }
   }
 
   private convertTimestamp(timestamp: any): string {
     if (timestamp instanceof Timestamp) {
       return moment(timestamp.toDate()).format('DD.MM.YYYY');
     } else if (typeof timestamp === 'string') {
-      return timestamp; // Falls bereits als String gespeichert, direkt zurückgeben
+      return timestamp;
     }
-    return ''; // Falls null oder undefined
+    return '';
   }
 
   filterPatients() {
-    const query = this.searchQuery.toLowerCase();
+    const queryLower = this.searchQuery.toLowerCase();
     this.filteredPatients = this.allPatients.filter(patient =>
-      patient.lastName.toLowerCase().includes(query) ||
-      patient.firstName.toLowerCase().includes(query) ||
-      patient.city.toLowerCase().includes(query)
+      patient.lastName.toLowerCase().includes(queryLower) ||
+      patient.firstName.toLowerCase().includes(queryLower) ||
+      patient.city.toLowerCase().includes(queryLower)
     );
   }
 
