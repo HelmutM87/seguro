@@ -5,6 +5,7 @@ import { PatientDetailComponent } from './patient-detail/patient-detail.componen
 import { SettingsComponent } from './settings/settings.component';
 import { IncomeComponent } from './income/income.component';
 import { ExpensesComponent } from './expenses/expenses.component';
+import { HospitalInvoiceComponent } from './hospital-invoice/hospital-invoice.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'patients/:id', component: PatientDetailComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'income', component: IncomeComponent },
-  { path: 'expenses', component: ExpensesComponent }
+  { path: 'expenses', component: ExpensesComponent },
+  { path: 'hospital-invoice', component: HospitalInvoiceComponent }
 ];
