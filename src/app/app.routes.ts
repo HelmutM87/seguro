@@ -6,6 +6,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { IncomeComponent } from './income/income.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { HospitalInvoiceComponent } from './hospital-invoice/hospital-invoice.component';
+import { ClientsComponent } from './clients/clients.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'income', component: IncomeComponent },
   { path: 'expenses', component: ExpensesComponent },
-  { path: 'hospital-invoice', component: HospitalInvoiceComponent }
+  { path: 'hospital-invoice', component: HospitalInvoiceComponent },
+  { path: 'clients', component: ClientsComponent }
 ];
