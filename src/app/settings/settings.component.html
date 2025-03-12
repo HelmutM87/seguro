@@ -1,1 +1,43 @@
-<p>settings works!</p>
+<mat-card class="settings-container">
+    <mat-tab-group>
+      <mat-tab label="Preise">
+        <div class="tab-content">
+          <h2>Registrierung</h2>
+          <form>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Erwachsene Person (single)</mat-label>
+              <input matInput type="number" [(ngModel)]="registrationPrices.adult" name="adultPrice">
+            </mat-form-field>
+  
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Verheiratete Person</mat-label>
+              <input matInput type="number" [(ngModel)]="registrationPrices.married" name="marriedPrice">
+            </mat-form-field>
+  
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Person unter 18 Jahre</mat-label>
+              <input matInput type="number" [(ngModel)]="registrationPrices.child" name="childPrice">
+            </mat-form-field>
+  
+            <h2>Monatliche Beiträge</h2>
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Pro Person</mat-label>
+              <input matInput type="number" [(ngModel)]="monthlyContribution" name="monthlyContribution">
+            </mat-form-field>
+  
+            <div class="button-container">
+              <button mat-raised-button color="primary" (click)="savePrices()" type="button">
+                Speichern
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+      <mat-tab label="Andere Bereiche">
+        <div class="tab-content">
+          <p>Weitere Einstellungen folgen...</p>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+  
